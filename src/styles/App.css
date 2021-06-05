@@ -1,5 +1,12 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: IBM Plex Mono, monospace;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(
+    163.62% 163.62% at 50% -45.31%,
+    #0ed4ff 0%,
+    #ffffff 99.87%
+  );
 }
