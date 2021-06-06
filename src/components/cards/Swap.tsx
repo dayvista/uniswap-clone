@@ -5,7 +5,6 @@ import { useAppSelector as useSelector } from "../../lib/redux/hooks";
 const Swap = () => {
   const fromValue = useSelector((state) => state.inputValues.fromVal);
   const toValue = useSelector((state) => state.inputValues.toVal);
-  const fromToken = useSelector((state) => state.swapTokens.fromToken);
   const toToken = useSelector((state) => state.swapTokens.toToken);
 
   return (
@@ -20,6 +19,7 @@ const Swap = () => {
         marginLeft: "auto",
         marginRight: "auto",
       }}
+      id="swap-card"
     >
       <p
         style={{
@@ -62,9 +62,8 @@ const Swap = () => {
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
-          // TODO: check the state of the inputs to see if an amount has been entered,
-          //       and change the background accordingly
-          background: true ? "#69c0ff" : "#1890FF",
+          background:
+            !fromValue || !toValue || !toToken ? "#69c0ff" : "#1890FF",
           boxShadow: "0px 2px 0px rgba(0, 0, 0, 0.016)",
           borderRadius: "10px",
           border: "none",
@@ -72,15 +71,17 @@ const Swap = () => {
           lineHeight: "24px",
           fontSize: "16px",
           color: "white",
-          // marginTop: "16px",
           padding: "13.5px 0px",
-          // TODO: check the state of the inputs to see if an amount has been entered,
-          //       and change the cursor state accordingly
-          cursor: true ? "default" : "pointer",
+          cursor: !fromValue || !toValue || !toToken ? "default" : "pointer",
         }}
       >
-        {/* TODO: change what is said here depending on whether inputs are filled out and tokens are selected */}
-        <span style={{ userSelect: "none" }}>ENTER AN AMOUNT</span>
+        <span style={{ userSelect: "none" }}>
+          {!fromValue && !toValue
+            ? "ENTER AN AMOUNT"
+            : !toToken
+            ? "SELECT A TOKEN"
+            : "Swap"}
+        </span>
       </button>
     </div>
   );

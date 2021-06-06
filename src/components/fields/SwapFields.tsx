@@ -3,27 +3,37 @@ import { removeDuplicateObjectFromArray } from "../../lib/utils";
 import { Token } from "../../lib/types";
 import { HiChevronDown } from "react-icons/hi";
 import DownArrowIcon from "../icons/DownArrow";
-// import {useSelector,useDispatch} from 'react-redux'
-// import {modifyFromValue,modifyToValue} from '../../lib/features/inputValues'
-// import {modifyFromToken,modifyToToken} from '../../lib/features/swapTokens'
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import {
+  useAppSelector as useSelector,
+  useAppDispatch as useDispatch,
+} from "../../lib/redux/hooks";
+import {
+  modifyFromValue,
+  modifyToValue,
+} from "../../lib/redux/features/inputValues";
+import {
+  modifyFromToken,
+  modifyToToken,
+} from "../../lib/redux/features/swapTokens";
 
 type FieldProps = {
   heading: string;
-  tokenList: Token[];
+  token: Token;
+  changeToken: ActionCreatorWithPayload<any, string>;
+  inputValue: string;
+  changeInputValue: ActionCreatorWithPayload<any, string>;
   balance?: { quantity: number; symbol: string };
 };
-const Field = ({ heading, tokenList, balance }: FieldProps) => {
-  const [token, setToken] = useState<Token>(null);
-
-  useEffect(() => {
-    if (
-      token == null &&
-      tokenList.length > 0 &&
-      heading.toLowerCase() === "from"
-    ) {
-      setToken(tokenList[0]);
-    }
-  }, [tokenList]);
+const Field = ({
+  heading,
+  balance,
+  token,
+  changeToken,
+  inputValue,
+  changeInputValue,
+}: FieldProps) => {
+  const dispatch = useDispatch();
 
   return (
     <div
@@ -123,6 +133,13 @@ const Field = ({ heading, tokenList, balance }: FieldProps) => {
           spellCheck={false}
           minLength={1}
           maxLength={79}
+          value={inputValue ? inputValue : ""}
+          onChange={(e) => {
+            const { target } = e;
+            const { value } = target;
+
+            dispatch(changeInputValue(value));
+          }}
         />
       </div>
       <div
@@ -183,6 +200,19 @@ const SwapFields = () => {
     })();
   }, []);
 
+  const fromToken = useSelector((state) => state.swapTokens.fromToken);
+  const toToken = useSelector((state) => state.swapTokens.toToken);
+  const fromValue = useSelector((state) => state.inputValues.fromVal);
+  const toValue = useSelector((state) => state.inputValues.toVal);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (fromToken == null && tokenList.length > 0) {
+      dispatch(modifyFromToken(tokenList[0]));
+    }
+  }, [tokenList]);
+
   return (
     <div
       style={{
@@ -193,10 +223,19 @@ const SwapFields = () => {
     >
       <Field
         heading="FROM"
-        tokenList={tokenList}
+        token={fromToken}
+        changeToken={modifyFromToken}
+        inputValue={fromValue}
+        changeInputValue={modifyFromValue}
         balance={{ quantity: 32, symbol: "ETH" }}
       />
-      <Field heading="TO" tokenList={tokenList} />
+      <Field
+        heading="TO"
+        token={toToken}
+        changeToken={modifyToToken}
+        inputValue={toValue}
+        changeInputValue={modifyToValue}
+      />
       <DownArrowIcon />
     </div>
   );

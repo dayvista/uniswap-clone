@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Token } from "../../types";
 
-const initialState: { fromToken: Token; toToken: Token } = {
+type TokensState = { fromToken: Token; toToken: Token };
+
+const initialState: TokensState = {
   fromToken: null,
   toToken: null,
 };

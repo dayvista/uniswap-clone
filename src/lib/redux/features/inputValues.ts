@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 export const inputValuesSlice = createSlice({
   name: "inputValues",
   initialState: {
-    fromVal: 0.0,
-    toVal: 0.0,
+    fromVal: null,
+    toVal: null,
   },
   reducers: {
     modifyFromValue: (state, action) => {
