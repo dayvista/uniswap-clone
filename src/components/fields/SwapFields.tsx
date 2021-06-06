@@ -1,8 +1,11 @@
-import React, { useState, useEffect, KeyboardEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { removeDuplicateObjectFromArray } from "../../lib/utils";
 import { Token } from "../../lib/types";
 import { HiChevronDown } from "react-icons/hi";
 import DownArrowIcon from "../icons/DownArrow";
+// import {useSelector,useDispatch} from 'react-redux'
+// import {modifyFromValue,modifyToValue} from '../../lib/features/inputValues'
+// import {modifyFromToken,modifyToToken} from '../../lib/features/swapTokens'
 
 type FieldProps = {
   heading: string;
@@ -186,7 +189,6 @@ const SwapFields = () => {
         display: "flex",
         flexDirection: "column",
         position: "relative",
-        padding: "23px 0px",
       }}
     >
       <Field

@@ -38,7 +38,7 @@ input[type="number"] {
 #nav {
   padding: 1.5rem;
   display: grid;
-  grid-template-columns: 207px 1fr 207px;
+  grid-template-columns: 120px 1fr 120px;
   user-select: none;
 }
 
