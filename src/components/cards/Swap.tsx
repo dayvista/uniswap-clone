@@ -14,7 +14,7 @@ const Swap = () => {
         display: "flex",
         flexDirection: "column",
         padding: "15px 15px 13px 15px",
-        width: "465px",
+        width: "24.22vw",
         marginTop: "calc(108px - 1.5rem)",
         marginLeft: "auto",
         marginRight: "auto",
