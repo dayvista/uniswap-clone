@@ -4,6 +4,8 @@
   position: relative;
   border: 4px solid #e6f7ff;
   border-radius: 10px;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .switch-button {

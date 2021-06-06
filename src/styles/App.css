@@ -1,3 +1,13 @@
+::selection {
+  background: #00bde6;
+  color: #fff;
+}
+
+::-moz-selection {
+  background: #00bde6;
+  color: #fff;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -14,6 +24,13 @@ body {
 a {
   text-decoration: none;
   color: black;
+}
+
+#nav {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 171px 1fr 207px;
+  user-select: none;
 }
 
 .card {

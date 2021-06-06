@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Home from "./Home";
 import Claim from "./Claim";
 import Nav from "../components/Nav";
@@ -16,6 +16,7 @@ const App = () => (
     <Switch>
       <Route exact={true} path="/" component={Home} />
       <Route exact={true} path="/claim" component={Claim} />
+      <Redirect from="*" to="/" />
     </Switch>
     <BlockNumber />
   </>
