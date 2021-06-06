@@ -1,4 +1,5 @@
 import React from "react";
+import statusDot from "../../assets/images/status-dot.svg";
 
 const BlockNumber = () => {
   return (
@@ -21,7 +22,7 @@ const BlockNumber = () => {
           alignItems: "center",
         }}
       >
-        <img src="/status-dot.svg" draggable={false} />
+        <img src={statusDot} draggable={false} />
       </div>
     </div>
   );
