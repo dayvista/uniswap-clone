@@ -24,6 +24,7 @@ const Airdrops = () => {
               className={`airdrop-claim-button ${
                 airdrop.claimed ? "claimed" : ""
               }`}
+              disabled={airdrop.claimed}
             >
               <span className="no-select">
                 {airdrop.claimed ? "CLAIMED" : "CLAIM"}
