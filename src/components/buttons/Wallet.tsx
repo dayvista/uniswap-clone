@@ -119,10 +119,10 @@ const Wallet = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                padding: "4px 37px 4px 20px",
+                padding: "4px 17px 4px 10px",
                 border: "4px solid #E6F7FF",
                 borderRadius: "10px",
-                width: "60px",
+                width: "90px",
                 height: !balance ? "24px" : "auto",
               }}
             >
@@ -132,9 +132,13 @@ const Wallet = () => {
                     fontSize: "16px",
                     lineHeight: "24px",
                     color: "rgba(0, 0, 0, 0.85)",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    maxWidth: "100%",
+                    overflow: "hidden",
                   }}
                 >
-                  {parseInt(balance)} ETH
+                  {parseFloat(balance).toFixed(1)} ETH
                 </p>
               ) : null}
             </div>

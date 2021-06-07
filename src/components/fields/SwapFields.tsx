@@ -5,7 +5,7 @@ import {
 } from "../../lib/utils";
 import { Token } from "../../lib/types";
 import { HiChevronDown } from "react-icons/hi";
-import DownArrowIcon from "../buttons/SwapTokens";
+import DownArrowIcon from "../buttons/TokenSwitch";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import {
   useAppSelector as useSelector,
@@ -21,6 +21,7 @@ import {
 } from "../../lib/redux/slices/swapTokens";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
+import { formatEther } from "@ethersproject/units";
 
 type FieldProps = {
   heading: string;
@@ -28,7 +29,7 @@ type FieldProps = {
   changeToken: ActionCreatorWithPayload<any, string>;
   inputValue: string;
   changeInputValue: ActionCreatorWithPayload<any, string>;
-  balance?: { quantity: number; symbol: string };
+  balance: { quantity: string; symbol: string };
 };
 const Field = ({
   heading,
@@ -40,20 +41,23 @@ const Field = ({
 }: FieldProps) => {
   const dispatch = useDispatch();
 
-  const { account } = useWeb3React<Web3Provider>();
+  const { account, active } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
-    if (heading.toLowerCase() === "from") {
-      if (token?.address && account) {
-        (async () => {
-          // TODO: need to figure out why this is returning an error
-          const tokenBalance = await getErc20Balance(token.address, account);
+    if (token && token.address && account) {
+      (async () => {
+        const tokenBalance = await getErc20Balance(token.address, account);
 
-          console.log(tokenBalance);
-        })();
-      }
+        dispatch(changeToken({ ...token, balance: formatEther(tokenBalance) }));
+      })();
     }
   }, [token, account]);
+
+  useEffect(() => {
+    if (!active && token && token.balance) {
+      changeToken({ ...token, balance: null });
+    }
+  }, [active]);
 
   return (
     <div
@@ -160,6 +164,7 @@ const Field = ({
 
             dispatch(changeInputValue(value));
           }}
+          disabled={heading.toLowerCase() === "to"}
         />
       </div>
       <div
@@ -187,7 +192,10 @@ const Field = ({
               }}
             >
               <span style={{ userSelect: "none" }}>Balance:</span>
-              {balance.quantity} {balance.symbol}
+              {balance.quantity === "0.0" || balance.quantity == "0"
+                ? "0"
+                : parseFloat(balance.quantity).toFixed(3)}{" "}
+              {balance.symbol}
             </p>
           ) : (
             <div style={{ height: "24px" }} />
@@ -202,20 +210,37 @@ const SwapFields = () => {
   const [tokenList, setTokenList] = useState<Token[]>([]);
 
   useEffect(() => {
-    const tokenSymbols = ["WETH", "AAVE", "UNI", "COMP", "DAI", "USDC"];
+    const desiredTokens = [
+      { symbol: "WETH", address: "0xd0A1E359811322d97991E03f863a0C30C2cF029C" },
+      { symbol: "AAVE", address: "0xB597cd8D3217ea6477232F9217fa70837ff667Af" },
+      { symbol: "UNI", address: "0x075A36BA8846C6B6F53644fDd3bf17E5151789DC" },
+      { symbol: "COMP", address: "0x61460874a7196d6a22D1eE4922473664b3E95270" },
+      { symbol: "DAI", address: "0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD" },
+      { symbol: "USDC", address: "0xe22da380ee6B445bb8273C81944ADEB6E8450422" },
+    ];
 
     (async () => {
-      // TODO: fetch tokens with kovan testnet addresses (or just hard code it?)
       const res = await fetch(
         "https://gateway.ipfs.io/ipns/tokens.uniswap.org"
       );
       const json: { tokens: Token[] } = await res.json();
       const { tokens } = json;
 
-      const filteredTokenList = removeDuplicateObjectFromArray(
-        tokens.filter((token) => tokenSymbols.includes(token.symbol)),
+      const filteredTokenList = removeDuplicateObjectFromArray<Token>(
+        tokens.filter((token) =>
+          desiredTokens.some(
+            (desiredToken) => desiredToken.symbol === token.symbol
+          )
+        ),
         "symbol"
-      );
+      ).map((token) => {
+        return {
+          ...token,
+          address: desiredTokens.find(
+            (desiredToken) => desiredToken.symbol === token.symbol
+          ).address,
+        };
+      });
 
       setTokenList(filteredTokenList);
     })();
@@ -229,6 +254,7 @@ const SwapFields = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // TODO: this would be the desired function if the user was able to choose a token from a modal menu
     // if (fromToken == null && tokenList.length > 0) {
     //   dispatch(modifyFromToken(tokenList[0]));
     // }
@@ -258,7 +284,11 @@ const SwapFields = () => {
         changeToken={modifyFromToken}
         inputValue={fromValue}
         changeInputValue={modifyFromValue}
-        balance={{ quantity: 32, symbol: "ETH" }}
+        balance={
+          fromToken && fromToken?.balance
+            ? { quantity: fromToken.balance, symbol: fromToken.symbol }
+            : null
+        }
       />
       <Field
         heading="TO"
@@ -266,6 +296,11 @@ const SwapFields = () => {
         changeToken={modifyToToken}
         inputValue={toValue}
         changeInputValue={modifyToValue}
+        balance={
+          toToken && toToken?.balance
+            ? { quantity: toToken.balance, symbol: toToken.symbol }
+            : null
+        }
       />
       <DownArrowIcon />
     </div>

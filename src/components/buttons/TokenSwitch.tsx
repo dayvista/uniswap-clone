@@ -3,12 +3,12 @@ import {
   useAppSelector as useSelector,
   useAppDispatch as useDispatch,
 } from "../../lib/redux/hooks";
-import { swapTokens } from "../../lib/redux/slices/swapTokens";
+import { switchTokens } from "../../lib/redux/slices/swapTokens";
 
 import circle from "../../assets/images/circle.svg";
 import downArrow from "../../assets/images/down-arrow.svg";
 
-const DownArrowIcon = () => {
+const TokenSwitch = () => {
   const fromToken = useSelector((state) => state.swapTokens.fromToken);
   const toToken = useSelector((state) => state.swapTokens.toToken);
 
@@ -33,7 +33,7 @@ const DownArrowIcon = () => {
       }}
       onClick={() => {
         if (fromToken.symbol !== toToken.symbol) {
-          dispatch(swapTokens());
+          dispatch(switchTokens());
         }
       }}
     >
@@ -67,4 +67,4 @@ const DownArrowIcon = () => {
   );
 };
 
-export default DownArrowIcon;
+export default TokenSwitch;

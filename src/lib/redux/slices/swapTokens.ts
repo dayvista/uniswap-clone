@@ -1,7 +1,10 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { Token } from "../../types";
 
-type TokensState = { fromToken: Token; toToken: Token };
+type TokensState = {
+  fromToken: Token;
+  toToken: Token;
+};
 
 const initialState: TokensState = {
   fromToken: null,
@@ -18,7 +21,7 @@ export const swapTokensSlice = createSlice({
     modifyToToken: (state, action) => {
       state.toToken = action.payload;
     },
-    swapTokens: (state) => {
+    switchTokens: (state) => {
       const currentFromToken = state.fromToken;
 
       state.fromToken = state.toToken;
@@ -27,7 +30,7 @@ export const swapTokensSlice = createSlice({
   },
 });
 
-export const { modifyFromToken, modifyToToken, swapTokens } =
+export const { modifyFromToken, modifyToToken, switchTokens } =
   swapTokensSlice.actions;
 
 export default swapTokensSlice.reducer;

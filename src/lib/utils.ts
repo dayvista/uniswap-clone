@@ -3,7 +3,10 @@ import Web3 from "web3";
 const rpcURL = `https://kovan.infura.io/v3/${process.env.RAZZLE_INFURA_PROJECT_ID}`;
 const web3 = new Web3(rpcURL);
 
-export const removeDuplicateObjectFromArray = (arr: object[], key: string) => {
+export const removeDuplicateObjectFromArray = <T>(
+  arr: object[],
+  key: string
+): T[] => {
   const check = {};
 
   const filteredArr = [];

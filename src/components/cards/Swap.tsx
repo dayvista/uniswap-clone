@@ -78,7 +78,7 @@ const Swap = () => {
         disabled={!fromValue || !toValue || !toToken}
       >
         <span style={{ userSelect: "none" }}>
-          {!fromValue && !toValue
+          {!fromValue || !toValue
             ? "ENTER AN AMOUNT"
             : !toToken
             ? "SELECT A TOKEN"
