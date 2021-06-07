@@ -43,13 +43,15 @@ const Field = ({
   const { account } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
-    if (token?.address && account) {
-      (async () => {
-        // TODO: need to figure out why this is returning an error
-        const tokenBalance = await getErc20Balance(token.address, account);
+    if (heading.toLowerCase() === "from") {
+      if (token?.address && account) {
+        (async () => {
+          // TODO: need to figure out why this is returning an error
+          const tokenBalance = await getErc20Balance(token.address, account);
 
-        console.log(tokenBalance);
-      })();
+          console.log(tokenBalance);
+        })();
+      }
     }
   }, [token, account]);
 
@@ -203,6 +205,7 @@ const SwapFields = () => {
     const tokenSymbols = ["WETH", "AAVE", "UNI", "COMP", "DAI", "USDC"];
 
     (async () => {
+      // TODO: fetch tokens with kovan testnet addresses (or just hard code it?)
       const res = await fetch(
         "https://gateway.ipfs.io/ipns/tokens.uniswap.org"
       );
