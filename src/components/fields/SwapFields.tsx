@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { removeDuplicateObjectFromArray } from "../../lib/utils";
+import {
+  removeDuplicateObjectFromArray,
+  getErc20Balance,
+} from "../../lib/utils";
 import { Token } from "../../lib/types";
 import { HiChevronDown } from "react-icons/hi";
 import DownArrowIcon from "../buttons/SwapTokens";
@@ -16,6 +19,8 @@ import {
   modifyFromToken,
   modifyToToken,
 } from "../../lib/redux/slices/swapTokens";
+import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
 
 type FieldProps = {
   heading: string;
@@ -34,6 +39,19 @@ const Field = ({
   changeInputValue,
 }: FieldProps) => {
   const dispatch = useDispatch();
+
+  const { account } = useWeb3React<Web3Provider>();
+
+  useEffect(() => {
+    if (token?.address && account) {
+      (async () => {
+        // TODO: need to figure out why this is returning an error
+        const tokenBalance = await getErc20Balance(token.address, account);
+
+        console.log(tokenBalance);
+      })();
+    }
+  }, [token, account]);
 
   return (
     <div

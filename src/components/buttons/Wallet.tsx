@@ -15,8 +15,7 @@ import avatar from "../../assets/images/avatar.svg";
 const injectedConnector = new InjectedConnector({ supportedChainIds: [42] });
 
 const Wallet = () => {
-  const { chainId, account, activate, active, library } =
-    useWeb3React<Web3Provider>();
+  const { account, activate, active, library } = useWeb3React<Web3Provider>();
 
   const balance = useSelector((state) => state.walletData.balance);
 
@@ -41,10 +40,6 @@ const Wallet = () => {
       dispatch(setBalance(null));
     }
   }, [library]);
-
-  useEffect(() => {
-    console.log(balance);
-  }, [balance]);
 
   return (
     <>
