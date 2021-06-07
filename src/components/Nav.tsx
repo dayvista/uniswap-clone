@@ -1,6 +1,6 @@
 import React from "react";
 import RouteSwitch from "../components/buttons/RouteSwitch";
-import ConnectWallet from "../components/buttons/ConnectWallet";
+import Wallet from "./buttons/Wallet";
 import logo from "../assets/images/logo.svg";
 
 const Nav = () => {
@@ -8,7 +8,7 @@ const Nav = () => {
     <div id="nav">
       <img src={logo} draggable={false} alt="Cloudswap Logo" />
       <RouteSwitch />
-      <ConnectWallet />
+      <Wallet />
     </div>
   );
 };

@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import inputValuesReducer from "./features/inputValues";
-import swapTokensReducer from "./features/swapTokens";
+import inputValuesReducer from "./slices/inputValues";
+import swapTokensReducer from "./slices/swapTokens";
+import walletDataReducer from "./slices/walletData";
 
 const store = configureStore({
   reducer: {
     inputValues: inputValuesReducer,
     swapTokens: swapTokensReducer,
+    walletData: walletDataReducer,
   },
 });
 

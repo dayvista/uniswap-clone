@@ -14,7 +14,8 @@ const Swap = () => {
         display: "flex",
         flexDirection: "column",
         padding: "15px 15px 13px 15px",
-        width: "24.22vw",
+        width: "496px",
+        maxWidth: "496px",
         marginTop: "calc(108px - 1.5rem)",
         marginLeft: "auto",
         marginRight: "auto",
@@ -74,6 +75,7 @@ const Swap = () => {
           padding: "13.5px 0px",
           cursor: !fromValue || !toValue || !toToken ? "default" : "pointer",
         }}
+        disabled={!fromValue || !toValue || !toToken}
       >
         <span style={{ userSelect: "none" }}>
           {!fromValue && !toValue

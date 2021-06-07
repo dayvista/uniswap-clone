@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { removeDuplicateObjectFromArray } from "../../lib/utils";
 import { Token } from "../../lib/types";
 import { HiChevronDown } from "react-icons/hi";
-import DownArrowIcon from "../icons/DownArrow";
+import DownArrowIcon from "../buttons/SwapTokens";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import {
   useAppSelector as useSelector,
@@ -11,11 +11,11 @@ import {
 import {
   modifyFromValue,
   modifyToValue,
-} from "../../lib/redux/features/inputValues";
+} from "../../lib/redux/slices/inputValues";
 import {
   modifyFromToken,
   modifyToToken,
-} from "../../lib/redux/features/swapTokens";
+} from "../../lib/redux/slices/swapTokens";
 
 type FieldProps = {
   heading: string;
@@ -208,8 +208,18 @@ const SwapFields = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (fromToken == null && tokenList.length > 0) {
-      dispatch(modifyFromToken(tokenList[0]));
+    // if (fromToken == null && tokenList.length > 0) {
+    //   dispatch(modifyFromToken(tokenList[0]));
+    // }
+
+    if (tokenList.length > 0) {
+      if (fromToken == null) {
+        dispatch(modifyFromToken(tokenList[0]));
+      }
+
+      if (toToken == null) {
+        dispatch(modifyToToken(tokenList[1]));
+      }
     }
   }, [tokenList]);
 
