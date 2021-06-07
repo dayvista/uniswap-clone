@@ -1,7 +1,8 @@
 import React from "react";
+import Airdrops from "../components/cards/Airdrops";
 
 const Claim = () => {
-  return <></>;
+  return <Airdrops />;
 };
 
 export default Claim;
