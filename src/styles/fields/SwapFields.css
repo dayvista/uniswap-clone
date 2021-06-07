@@ -1,0 +1,81 @@
+#fields-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.field-container {
+  display: flex;
+  flex-direction: column;
+  background: #e6f7ff;
+  border: 3px solid #91d5ff;
+  border-radius: 10px;
+  padding: 5px 32px 6px 19px;
+}
+
+.token-button-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0px 9px 0px;
+}
+.token-button-container input {
+  color: black;
+  width: 0px;
+  position: relative;
+  font-weight: 500;
+  outline: none;
+  border: none;
+  flex: 1 1 auto;
+  background-color: transparent;
+  font-size: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0px;
+  appearance: textfield;
+  text-align: right;
+  margin-left: 12px;
+}
+
+.token-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e6f7ff;
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  min-height: 40px;
+  min-width: 114px;
+}
+.token-button img {
+  width: 19px;
+  height: 19px;
+}
+.token-button p {
+  font-size: 16px;
+  line-height: 23px;
+  text-align: center;
+  margin: 0px 8px;
+}
+.token-button svg {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.balance-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.balance-container p {
+  font-size: 14px;
+  line-height: 24px;
+  text-align: left;
+  color: rgba(0, 0, 0, 0.85);
+}
+.balance-container > div {
+  height: 24px;
+}

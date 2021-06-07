@@ -1,0 +1,17 @@
+#block-number-container {
+  display: flex;
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+  color: #52c41a;
+  font-size: 14px;
+  user-select: none;
+}
+#block-number-container p {
+  margin-right: 8px;
+}
+#block-number-container div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -11,6 +11,8 @@ import { setBalance } from "../../lib/redux/slices/walletData";
 
 import avatar from "../../assets/images/avatar.svg";
 
+import "../../styles/buttons/Wallet.css";
+
 // uses Kovan testnet (chainId 42)
 const injectedConnector = new InjectedConnector({ supportedChainIds: [42] });
 
@@ -44,103 +46,24 @@ const Wallet = () => {
   return (
     <>
       {!active ? (
-        <button
-          style={{
-            fontWeight: 500,
-            background: "#e6f7ff",
-            padding: "10px 36px",
-            cursor: "pointer",
-            border: "none",
-            borderRadius: "10px",
-            fontFamily: "IBM Plex Mono, monospace",
-            fontSize: "16px",
-            justifySelf: "flex-end",
-            width: "207px",
-            height: "fit-content",
-          }}
-          onClick={onClick}
-        >
+        <button onClick={onClick} id="connect-wallet-button">
           Connect Wallet
         </button>
       ) : (
-        <div
-          style={{
-            width: "314px",
-            height: "40px",
-            justifySelf: "flex-end",
-          }}
-        >
-          <div
-            style={{
-              marginLeft: "auto",
-              zIndex: 1,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "fit-content",
-              height: "100%",
-              padding: "0px 6.5px 0px 34.5px",
-              background: "#E6F7FF",
-              boxShadow: "0px 2px 0px rgba(0, 0, 0, 0.016)",
-              borderRadius: "10px",
-              position: "relative",
-            }}
-          >
-            <p
-              style={{
-                fontSize: "16px",
-                lineHeight: "24px",
-                fontWeight: "bold",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
+        <div id="wallet-container">
+          <div>
+            <p>
               {account.substr(0, 4) +
                 "..." +
                 account.substr(account.length - 6)}
             </p>
-            <img
-              src={avatar}
-              alt="user avatar"
-              style={{
-                borderRadius: "100%",
-                marginLeft: "6.5px",
-                marginBottom: "2px",
-                width: "19px",
-                height: "19px",
-              }}
-            />
+            <img src={avatar} alt="user avatar" />
             <div
               style={{
-                position: "absolute",
-                right: "calc(100% - 18px)",
-                zIndex: -1,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "4px 17px 4px 10px",
-                border: "4px solid #E6F7FF",
-                borderRadius: "10px",
-                width: "90px",
                 height: !balance ? "24px" : "auto",
               }}
             >
-              {balance ? (
-                <p
-                  style={{
-                    fontSize: "16px",
-                    lineHeight: "24px",
-                    color: "rgba(0, 0, 0, 0.85)",
-                    whiteSpace: "nowrap",
-                    textOverflow: "ellipsis",
-                    maxWidth: "100%",
-                    overflow: "hidden",
-                  }}
-                >
-                  {parseFloat(balance).toFixed(1)} ETH
-                </p>
-              ) : null}
+              {balance ? <p>{parseFloat(balance).toFixed(1)} ETH</p> : null}
             </div>
           </div>
         </div>

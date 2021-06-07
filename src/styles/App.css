@@ -21,6 +21,12 @@ body {
   );
 }
 
+p,
+input,
+button {
+  font-family: IBM Plex Mono, monospace;
+}
+
 a {
   text-decoration: none;
   color: black;
@@ -46,4 +52,17 @@ input[type="number"] {
   background: #e6f7ff;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+}
+
+.text {
+  line-height: 24px;
+}
+.bold {
+  font-weight: 500;
+}
+.extra-bold {
+  font-weight: bold;
+}
+.no-select {
+  user-select: none;
 }

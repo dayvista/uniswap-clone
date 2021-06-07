@@ -5,7 +5,7 @@ import {
 } from "../../lib/utils";
 import { Token } from "../../lib/types";
 import { HiChevronDown } from "react-icons/hi";
-import DownArrowIcon from "../buttons/TokenSwitch";
+import TokenSwitch from "../buttons/TokenSwitch";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import {
   useAppSelector as useSelector,
@@ -22,6 +22,8 @@ import {
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { formatEther } from "@ethersproject/units";
+
+import "../../styles/fields/SwapFields.css";
 
 type FieldProps = {
   heading: string;
@@ -43,8 +45,9 @@ const Field = ({
 
   const { account, active } = useWeb3React<Web3Provider>();
 
+  // Get the token balance
   useEffect(() => {
-    if (token && token.address && account) {
+    if (token && token.address && !token.balance && account) {
       (async () => {
         const tokenBalance = await getErc20Balance(token.address, account);
 
@@ -53,104 +56,44 @@ const Field = ({
     }
   }, [token, account]);
 
+  // Make all token balances 'null' when the user is no longer logged into Metamask
   useEffect(() => {
     if (!active && token && token.balance) {
-      changeToken({ ...token, balance: null });
+      dispatch(changeToken({ ...token, balance: null }));
     }
   }, [active]);
 
   return (
     <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        marginBottom: heading.toLowerCase() === "from" ? "3px" : 0,
-        background: "#e6f7ff",
-        border: "3px solid #91d5ff",
-        borderRadius: "10px",
-        padding: "5px 32px 6px 19px",
-      }}
+      className="field-container"
+      style={{ marginBottom: heading.toLowerCase() === "from" ? "3px" : 0 }}
     >
       <p
         style={{
           fontSize: "14px",
-          lineHeight: "24px",
-          fontWeight: 500,
-          userSelect: "none",
         }}
+        className="text bold no-select"
       >
         {heading}
       </p>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "6px 0px 9px 0px",
-        }}
-      >
+      <div className="token-button-container">
         <button
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: token ? "8px 16px" : "8px 16px 8px 5px",
-            background: "#E6F7FF",
-            boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.15)",
-            borderRadius: "10px",
-            border: "none",
-            cursor: "pointer",
-            minHeight: "40px",
-            minWidth: "114px",
-          }}
+          style={{ padding: token ? "8px 16px" : "8px 16px 8px 5px" }}
+          className="token-button"
         >
           {token ? (
             <img
-              style={{ width: "19px", height: "19px", userSelect: "none" }}
+              className="no-select"
               src={token.logoURI}
               alt={`${token.symbol} logo`}
             />
           ) : null}
-          <p
-            style={{
-              fontSize: "16px",
-              fontWeight: 500,
-              lineHeight: "23px",
-              textAlign: "center",
-              margin: "0px 8px",
-              fontFamily: "IBM Plex Mono, monospace",
-              userSelect: "none",
-            }}
-          >
+          <p className="no-select bold">
             {token ? token.symbol : "Select Token"}
           </p>
-          <HiChevronDown
-            style={{
-              fontSize: "15px",
-              color: "rgba(0, 0, 0, 0.85)",
-              userSelect: "none",
-            }}
-          />
+          <HiChevronDown className="no-select" />
         </button>
         <input
-          style={{
-            color: "rgb(0, 0, 0)",
-            width: "0px",
-            position: "relative",
-            fontWeight: 500,
-            outline: "none",
-            border: "none",
-            flex: "1 1 auto",
-            backgroundColor: "transparent",
-            fontSize: "24px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            padding: "0px",
-            appearance: "textfield",
-            textAlign: "right",
-            marginLeft: "12px",
-            fontFamily: "IBM Plex Mono, monospace",
-          }}
           type="number"
           inputMode="decimal"
           placeholder="0.0"
@@ -167,40 +110,18 @@ const Field = ({
           disabled={heading.toLowerCase() === "to"}
         />
       </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          color: "rgb(0, 0, 0)",
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-          }}
-        >
-          {balance ? (
-            <p
-              style={{
-                fontSize: "14px",
-                lineHeight: "24px",
-                textAlign: "left",
-                color: "rgba(0, 0, 0, 0.85)",
-              }}
-            >
-              <span style={{ userSelect: "none" }}>Balance:</span>
-              {balance.quantity === "0.0" || balance.quantity == "0"
-                ? "0"
-                : parseFloat(balance.quantity).toFixed(3)}{" "}
-              {balance.symbol}
-            </p>
-          ) : (
-            <div style={{ height: "24px" }} />
-          )}
-        </div>
+      <div className="balance-container">
+        {balance ? (
+          <p>
+            <span className="no-select">Balance:</span>
+            {balance.quantity === "0.0" || balance.quantity == "0"
+              ? "0"
+              : parseFloat(balance.quantity).toFixed(3)}{" "}
+            {balance.symbol}
+          </p>
+        ) : (
+          <div />
+        )}
       </div>
     </div>
   );
@@ -209,6 +130,7 @@ const Field = ({
 const SwapFields = () => {
   const [tokenList, setTokenList] = useState<Token[]>([]);
 
+  // Async load the (mock) token list
   useEffect(() => {
     const desiredTokens = [
       { symbol: "WETH", address: "0xd0A1E359811322d97991E03f863a0C30C2cF029C" },
@@ -253,8 +175,10 @@ const SwapFields = () => {
 
   const dispatch = useDispatch();
 
+  // Set the initial token values on page load
   useEffect(() => {
-    // TODO: this would be the desired function if the user was able to choose a token from a modal menu
+    // lines 259 - 261 would be the desired function if the user was able to choose a token from a modal menu
+
     // if (fromToken == null && tokenList.length > 0) {
     //   dispatch(modifyFromToken(tokenList[0]));
     // }
@@ -277,6 +201,7 @@ const SwapFields = () => {
         flexDirection: "column",
         position: "relative",
       }}
+      id="fields-container"
     >
       <Field
         heading="FROM"
@@ -302,7 +227,7 @@ const SwapFields = () => {
             : null
         }
       />
-      <DownArrowIcon />
+      <TokenSwitch />
     </div>
   );
 };
