@@ -5,5 +5,5 @@ export type Token = {
   address: string;
   chainId: number;
   logoURI: string;
-  balance: string;
+  balance?: string;
 };

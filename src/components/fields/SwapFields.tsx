@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import {
   removeDuplicateObjectFromArray,
   getErc20Balance,
+  getExchangeRate,
 } from "../../lib/utils";
 import { Token } from "../../lib/types";
 import { HiChevronDown } from "react-icons/hi";
@@ -21,7 +22,9 @@ import {
 } from "../../lib/redux/slices/swapTokens";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-import { formatEther } from "@ethersproject/units";
+import { formatEther, parseEther } from "@ethersproject/units";
+import debounce from "lodash.debounce";
+import { tokens } from "../../lib/data/tokens";
 
 import "../../styles/fields/SwapFields.css";
 
@@ -41,6 +44,9 @@ const Field = ({
   inputValue,
   changeInputValue,
 }: FieldProps) => {
+  const fromToken = useSelector((state) => state.swapTokens.fromToken);
+  const toToken = useSelector((state) => state.swapTokens.toToken);
+
   const dispatch = useDispatch();
 
   const { account, active } = useWeb3React<Web3Provider>();
@@ -62,6 +68,39 @@ const Field = ({
       dispatch(changeToken({ ...token, balance: null }));
     }
   }, [active]);
+
+  // on input change, get the exchange rate between selected tokens
+  const debounceOnChange = debounce((event: ChangeEvent<HTMLInputElement>) => {
+    const { target } = event;
+    const { value } = target;
+
+    dispatch(changeInputValue(value));
+  }, 1000);
+
+  // useEffect(() => {
+  //   const shouldCalcExchangeRate =
+  //     heading.toLowerCase() === "from" &&
+  //     inputValue &&
+  //     active &&
+  //     fromToken &&
+  //     fromToken.address &&
+  //     toToken &&
+  //     toToken.address
+  //       ? true
+  //       : false;
+
+  //   if (shouldCalcExchangeRate) {
+  //     (async () => {
+  //       const exchangeRate = await getExchangeRate(
+  //         parseEther(inputValue),
+  //         fromToken.address,
+  //         toToken.address
+  //       );
+
+  //       console.log(exchangeRate);
+  //     })();
+  //   }
+  // }, [inputValue]);
 
   return (
     <div
@@ -100,14 +139,9 @@ const Field = ({
           spellCheck={false}
           minLength={1}
           maxLength={79}
-          value={inputValue ? inputValue : ""}
-          onChange={(e) => {
-            const { target } = e;
-            const { value } = target;
-
-            dispatch(changeInputValue(value));
-          }}
+          onChange={debounceOnChange}
           disabled={heading.toLowerCase() === "to"}
+          id={`${heading.toLowerCase()}-token-input`}
         />
       </div>
       <div className="balance-container">
@@ -130,7 +164,7 @@ const Field = ({
 const SwapFields = () => {
   const [tokenList, setTokenList] = useState<Token[]>([]);
 
-  // Async load the (mock) token list
+  // mock load the token list
   useEffect(() => {
     const desiredTokens = [
       { symbol: "WETH", address: "0xd0A1E359811322d97991E03f863a0C30C2cF029C" },
@@ -141,31 +175,23 @@ const SwapFields = () => {
       { symbol: "USDC", address: "0xe22da380ee6B445bb8273C81944ADEB6E8450422" },
     ];
 
-    (async () => {
-      const res = await fetch(
-        "https://gateway.ipfs.io/ipns/tokens.uniswap.org"
-      );
-      const json: { tokens: Token[] } = await res.json();
-      const { tokens } = json;
+    const filteredTokenList = removeDuplicateObjectFromArray<Token>(
+      tokens.filter((token) =>
+        desiredTokens.some(
+          (desiredToken) => desiredToken.symbol === token.symbol
+        )
+      ),
+      "symbol"
+    ).map((token) => {
+      return {
+        ...token,
+        address: desiredTokens.find(
+          (desiredToken) => desiredToken.symbol === token.symbol
+        ).address,
+      };
+    });
 
-      const filteredTokenList = removeDuplicateObjectFromArray<Token>(
-        tokens.filter((token) =>
-          desiredTokens.some(
-            (desiredToken) => desiredToken.symbol === token.symbol
-          )
-        ),
-        "symbol"
-      ).map((token) => {
-        return {
-          ...token,
-          address: desiredTokens.find(
-            (desiredToken) => desiredToken.symbol === token.symbol
-          ).address,
-        };
-      });
-
-      setTokenList(filteredTokenList);
-    })();
+    setTokenList(filteredTokenList);
   }, []);
 
   const fromToken = useSelector((state) => state.swapTokens.fromToken);
@@ -177,8 +203,7 @@ const SwapFields = () => {
 
   // Set the initial token values on page load
   useEffect(() => {
-    // lines 259 - 261 would be the desired function if the user was able to choose a token from a modal menu
-
+    // lines 259 - 261 = the desired function if the user was able to choose a token from a modal menu
     // if (fromToken == null && tokenList.length > 0) {
     //   dispatch(modifyFromToken(tokenList[0]));
     // }
